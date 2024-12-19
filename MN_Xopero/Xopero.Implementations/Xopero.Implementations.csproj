@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Repositories\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\GitHosting.Bitbucket\GitHosting.Bitbucket.csproj" />
+      <ProjectReference Include="..\GitHosting.GitHub\GitHosting.GitHub.csproj" />
+      <ProjectReference Include="..\Xopero.Abstraction\Xopero.Abstraction.csproj" />
+      <ProjectReference Include="..\Xopero.Models\Xopero.Models.csproj" />
+    </ItemGroup>
+
+</Project>

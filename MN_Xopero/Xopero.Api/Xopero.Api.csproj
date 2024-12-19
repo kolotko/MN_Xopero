@@ -9,7 +9,21 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0"/>
+        <PackageReference Include="Serilog" Version="4.2.0" />
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+        <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+        <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ Xopero.HighPerformanceLogging\Xopero.HighPerformanceLogging.csproj" />
+      <ProjectReference Include="..\GitHosting.Bitbucket\GitHosting.Bitbucket.csproj" />
+      <ProjectReference Include="..\GitHosting.GitHub\GitHosting.GitHub.csproj" />
+      <ProjectReference Include="..\Xopero.Abstraction\Xopero.Abstraction.csproj" />
+      <ProjectReference Include="..\Xopero.Contracts\Xopero.Contracts.csproj" />
+      <ProjectReference Include="..\Xopero.Implementations\Xopero.Implementations.csproj" />
     </ItemGroup>
 
 </Project>
