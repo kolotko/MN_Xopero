@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0"/>
         <PackageReference Include="Serilog" Version="4.2.0" />
         <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
@@ -24,6 +25,7 @@
       <ProjectReference Include="..\Xopero.Abstraction\Xopero.Abstraction.csproj" />
       <ProjectReference Include="..\Xopero.Contracts\Xopero.Contracts.csproj" />
       <ProjectReference Include="..\Xopero.Implementations\Xopero.Implementations.csproj" />
+      <ProjectReference Include="..\Xopero.Validators\Xopero.Validators.csproj" />
     </ItemGroup>
 
 </Project>

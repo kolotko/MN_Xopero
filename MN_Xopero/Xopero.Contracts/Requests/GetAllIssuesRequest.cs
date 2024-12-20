@@ -4,5 +4,5 @@ namespace Xopero.Contracts.Requests;
 
 public class GetAllIssuesRequest
 {
-    public required EHostingService? HostingService { get; set; }
+    public EHostingService? HostingService { get; set; }
 }

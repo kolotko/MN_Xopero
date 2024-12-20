@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using FluentValidation;
 using GitHosting.Bitbucket;
 using GitHosting.GitHub;
 using Microsoft.Extensions.Options;
@@ -9,6 +10,7 @@ using Xopero.Api.Handlers;
 using Xopero.Implementations.Factories;
 using Xopero.Implementations.Services;
 using Xopero.Models.Settings;
+using Xopero.Validators;
 
 namespace Xopero.Api;
 
@@ -18,6 +20,25 @@ public static class ApplicationServiceCollectionExtensions
     {
         services.Configure<GitHubSettings>(configurationManager.GetSection(GitHubSettings.GitHubSectionName));
         services.Configure<BitbucketSettings>(configurationManager.GetSection(BitbucketSettings.BitbucketSectionName));
+        return services;
+    }
+    
+    public static IServiceCollection AddApplicationValidators(this IServiceCollection services)
+    {
+        services.AddValidatorsFromAssemblyContaining<GetAllIssuesRequestValidator>();
+        return services;
+    }
+    
+    public static IServiceCollection AddGlobalErrorHandling(this IServiceCollection services)
+    {
+        services.AddProblemDetails(options =>
+            options.CustomizeProblemDetails = (context) =>
+            {
+                context.ProblemDetails.Status = 500;
+                context.ProblemDetails.Title = "Server Error"; //TODO: locale
+                context.ProblemDetails.Extensions = null;
+            }
+        );
         return services;
     }
     

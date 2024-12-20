@@ -17,6 +17,6 @@ public class GitIssueService(IGitHostingServiceFactory gitHostingServiceFactory)
             return allIssues;
         }
         
-        return [new GitIssue()];
+        return [];
     }
 }

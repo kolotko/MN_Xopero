@@ -11,8 +11,10 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddApplicationConfiguration(builder.Configuration);
+builder.Services.AddApplicationValidators();
 builder.Services.AddApplicationImplementation();
 builder.Services.AddHttpClientService();
+builder.Services.AddGlobalErrorHandling();
 
 builder.Logging.ClearProviders();
 builder.Host.UseSerilog((context, configuration) =>

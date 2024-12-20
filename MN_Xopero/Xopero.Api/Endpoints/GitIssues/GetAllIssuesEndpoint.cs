@@ -1,4 +1,6 @@
-﻿using Xopero.Abstraction.Services;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using Xopero.Abstraction.Services;
 using Xopero.Contracts.Models;
 using Xopero.Contracts.Requests;
 using Xopero.Mapping;
@@ -15,15 +17,22 @@ public static class GetAllIssuesEndpoint
         app.MapGet(ApiEndpoints.GitIssues.GetAll, async (
                 [AsParameters] GetAllIssuesRequest request,
                 IGitIssueService gitIssueService,
+                IValidator<GetAllIssuesRequest> getAllIssuesRequestValidator,
                 CancellationToken cancellationToken) =>
         {
-            // walidacja,
+            var validationDtoResult = await getAllIssuesRequestValidator.ValidateAsync(request, cancellationToken);
+            if (!validationDtoResult.IsValid)
+            {
+                return Results.ValidationProblem(validationDtoResult.ToDictionary());
+            }
+
             var issues = await gitIssueService.GetAllIssuesForRepository(EHostingService.GitHub, cancellationToken);
             return TypedResults.Ok(issues.MapToGitIssueDto());
         })
         .WithName(Name)
         .Produces<GitIssueDto[]>(StatusCodes.Status200OK)
-        .Produces<GitIssueDto[]>(StatusCodes.Status400BadRequest); //TODO
+        .Produces<ValidationProblemDetails>(StatusCodes.Status400BadRequest)
+        .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
             
         return app;
     }
