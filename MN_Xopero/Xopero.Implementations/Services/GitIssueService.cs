@@ -59,4 +59,45 @@ public class GitIssueService(IGitHostingServiceFactory gitHostingServiceFactory)
             Body = issue!
         };
     }
+
+    public async Task<Result<GitIssue>> UpdateIssueForRepository(EHostingService hostingService, GitIssue gitIssue,
+        CancellationToken cancellationToken = default)
+    {
+        var externalGitHosting = gitHostingServiceFactory.GetExternalGitHostingAdapter(hostingService);
+        var issue = await externalGitHosting.UpdateIssue(gitIssue, cancellationToken);
+        if (issue is null)
+        {
+            return new Result<GitIssue>()
+            {
+                IsSuccess = false,
+                Message = "Can't update issue." //TODO location
+            };
+        }
+
+        return new Result<GitIssue>()
+        {
+            IsSuccess = true,
+            Body = issue!
+        };
+    }
+
+    public async Task<Result<GitIssue>> CloseIssueForRepository(EHostingService hostingService, int id, CancellationToken cancellationToken = default)
+    {
+        var externalGitHosting = gitHostingServiceFactory.GetExternalGitHostingAdapter(hostingService);
+        var issue = await externalGitHosting.CloseIssue(id, cancellationToken);
+        if (issue is null)
+        {
+            return new Result<GitIssue>()
+            {
+                IsSuccess = false,
+                Message = "Can't close issue." //TODO location
+            };
+        }
+
+        return new Result<GitIssue>()
+        {
+            IsSuccess = true,
+            Body = issue!
+        };
+    }
 }

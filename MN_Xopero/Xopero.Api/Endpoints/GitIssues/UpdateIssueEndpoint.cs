@@ -1,4 +1,12 @@
-﻿namespace Xopero.Api.Endpoints.GitIssues;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using Xopero.Abstraction.Services;
+using Xopero.Contracts.Requests;
+using Xopero.Contracts.Responses;
+using Xopero.Mapping;
+using Xopero.Models.Enums;
+
+namespace Xopero.Api.Endpoints.GitIssues;
 
 public static class UpdateIssueEndpoint
 {
@@ -6,13 +14,30 @@ public static class UpdateIssueEndpoint
 
     public static IEndpointRouteBuilder MapUpdateIssue(this IEndpointRouteBuilder app)
     {
-        app.MapPut(ApiEndpoints.GitIssues.Update, async (CancellationToken token) =>
+        app.MapPut(ApiEndpoints.GitIssues.Update, async (
+                [AsParameters] UpdateIssueRequest request,
+                IGitIssueService gitIssueService,
+                IValidator<UpdateIssueRequest> updateIssueRequestValidator,
+                CancellationToken cancellationToken) =>
             {
-                return TypedResults.Ok();
+                var validationDtoResult = await updateIssueRequestValidator.ValidateAsync(request, cancellationToken);
+                if (!validationDtoResult.IsValid)
+                {
+                    return Results.ValidationProblem(validationDtoResult.ToDictionary());
+                }
+                
+                var model = request.MapToGitIssue();
+                var result = await gitIssueService.UpdateIssueForRepository((EHostingService)request.HostingService!, model, cancellationToken);
+                if (result.IsSuccess)
+                {
+                    return TypedResults.Ok(result.Body!.MapToUpdateIssueResponse());
+                }
+                return TypedResults.Problem(result.Message, statusCode: StatusCodes.Status400BadRequest);
             })
             .WithName(Name)
-            .Produces(StatusCodes.Status200OK);
-        // .Produces<MoviesResponse>(StatusCodes.Status200OK);
+            .Produces<UpdateIssueResponseDto>(StatusCodes.Status200OK)
+            .Produces<ValidationProblemDetails>(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
             
         return app;
     }

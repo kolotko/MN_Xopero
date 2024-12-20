@@ -51,4 +51,32 @@ public class GitHubAdapter: IExternalGitHostingAdapter
         var issue =  await response.Content.ReadFromJsonAsync<GitHubIssueDto>(cancellationToken);
         return issue?.MapToGitIssue();
     }
+
+    public async Task<GitIssue?> UpdateIssue(GitIssue gitIssue, CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.PatchAsJsonAsync($"/repos/kolotko/MN_Xopero/issues/{gitIssue.Number}", gitIssue.MapToGitIssueDto(), cancellationToken);
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+        
+        var issue =  await response.Content.ReadFromJsonAsync<GitHubIssueDto>(cancellationToken);
+        return issue?.MapToGitIssue();
+    }
+
+    public async Task<GitIssue?> CloseIssue(int id, CancellationToken cancellationToken = default)
+    {
+        var closeDto = new GitHubCloseIssueDto()
+        {
+            State = "closed"
+        };
+        var response = await _httpClient.PatchAsJsonAsync($"/repos/kolotko/MN_Xopero/issues/{id}", closeDto, cancellationToken);
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+        
+        var issue =  await response.Content.ReadFromJsonAsync<GitHubIssueDto>(cancellationToken);
+        return issue?.MapToGitIssue();
+    }
 }

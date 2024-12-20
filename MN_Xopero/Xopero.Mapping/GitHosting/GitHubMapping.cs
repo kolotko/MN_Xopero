@@ -20,6 +20,7 @@ public static class GitHubMapping
     {
         return new GitHubIssueDto
         {
+            Number = model.Number,
             Title = model.Title,
             Body = model.Body,
             HtmlUrl = model.HtmlUrl

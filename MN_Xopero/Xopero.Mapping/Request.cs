@@ -13,4 +13,13 @@ public static class Request
             Body = dto.Body,
         };
     }
+    public static GitIssue MapToGitIssue(this UpdateIssueRequest dto)
+    {
+        return new GitIssue()
+        {
+            Number = dto.Id,
+            Title = dto.Title,
+            Body = dto.Body,
+        };
+    }
 }

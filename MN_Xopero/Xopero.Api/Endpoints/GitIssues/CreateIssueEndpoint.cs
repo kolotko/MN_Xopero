@@ -15,7 +15,7 @@ public static class CreateIssueEndpoint
     public static IEndpointRouteBuilder MapCreateIssue(this IEndpointRouteBuilder app)
     {
         app.MapPost(ApiEndpoints.GitIssues.Create, async (
-                [AsParameters] CreateIssueRequest request,
+                [AsParameters] CreateIssueRequest request, //TODO from body powinno być
                 IValidator<CreateIssueRequest> createIssueValidator,
                 IGitIssueService gitIssueService,
                 CancellationToken cancellationToken) =>

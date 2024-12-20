@@ -12,7 +12,7 @@ public static class Responses
         {
             GitIssues = model.Select(x => new GitIssueDto
             {
-                Number = x.Number,
+                Id = x.Number,
                 Title = x.Title,
                 Body = x.Body,
                 HtmlUrl = x.HtmlUrl
@@ -24,7 +24,7 @@ public static class Responses
     {
         return new CreateIssueResponseDto()
         {
-            Number = model.Number,
+            Id = model.Number,
             Title = model.Title,
             Body = model.Body,
             HtmlUrl = model.HtmlUrl
@@ -35,7 +35,18 @@ public static class Responses
     {
         return new GetIssueResponseDto()
         {
-            Number = model.Number,
+            Id = model.Number,
+            Title = model.Title,
+            Body = model.Body,
+            HtmlUrl = model.HtmlUrl
+        };
+    }
+    
+    public static GetIssueResponseDto MapToUpdateIssueResponse(this GitIssue model)
+    {
+        return new GetIssueResponseDto()
+        {
+            Id = model.Number,
             Title = model.Title,
             Body = model.Body,
             HtmlUrl = model.HtmlUrl

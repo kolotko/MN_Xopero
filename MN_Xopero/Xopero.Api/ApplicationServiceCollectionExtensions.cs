@@ -28,6 +28,8 @@ public static class ApplicationServiceCollectionExtensions
         services.AddValidatorsFromAssemblyContaining<GetAllIssuesRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<CreateIssueRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<GetIssueRequestValidator>();
+        services.AddValidatorsFromAssemblyContaining<UpdateIssueRequestValidator>();
+        services.AddValidatorsFromAssemblyContaining<CloseIssueRequestValidator>();
         return services;
     }
     

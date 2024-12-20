@@ -19,4 +19,14 @@ public class BitbucketAdapter(HttpClient httpClient) : IExternalGitHostingAdapte
     {
         throw new NotImplementedException();
     }
+
+    public Task<GitIssue?> UpdateIssue(GitIssue gitIssue, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<GitIssue?> CloseIssue(int id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 }
