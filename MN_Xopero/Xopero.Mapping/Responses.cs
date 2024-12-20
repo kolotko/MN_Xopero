@@ -1,17 +1,44 @@
 ﻿using Xopero.Contracts.Models;
+using Xopero.Contracts.Responses;
 using Xopero.Models;
 
 namespace Xopero.Mapping;
 
 public static class Responses
 {
-    public static IEnumerable<GitIssueDto> MapToGitIssueDto(this IEnumerable<GitIssue> model)
+    public static GetAllIssuesResponseDto MapToGetAllIssuesResponse(this IEnumerable<GitIssue> model)
     {
-        return model.Select(x => new GitIssueDto
+        return new GetAllIssuesResponseDto()
         {
-            Title = x.Title,
-            Body = x.Body,
-            HtmlUrl = x.HtmlUrl
-        });
+            GitIssues = model.Select(x => new GitIssueDto
+            {
+                Number = x.Number,
+                Title = x.Title,
+                Body = x.Body,
+                HtmlUrl = x.HtmlUrl
+            }).ToArray()
+        };
+    }
+    
+    public static CreateIssueResponseDto MapToCreateIssueResponse(this GitIssue model)
+    {
+        return new CreateIssueResponseDto()
+        {
+            Number = model.Number,
+            Title = model.Title,
+            Body = model.Body,
+            HtmlUrl = model.HtmlUrl
+        };
+    }
+    
+    public static GetIssueResponseDto MapToGetIssueResponse(this GitIssue model)
+    {
+        return new GetIssueResponseDto()
+        {
+            Number = model.Number,
+            Title = model.Title,
+            Body = model.Body,
+            HtmlUrl = model.HtmlUrl
+        };
     }
 }

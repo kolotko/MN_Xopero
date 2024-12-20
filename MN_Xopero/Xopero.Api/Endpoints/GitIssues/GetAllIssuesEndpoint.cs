@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Xopero.Abstraction.Services;
 using Xopero.Contracts.Models;
 using Xopero.Contracts.Requests;
+using Xopero.Contracts.Responses;
 using Xopero.Mapping;
 using EHostingService = Xopero.Models.Enums.EHostingService;
 
@@ -26,11 +27,12 @@ public static class GetAllIssuesEndpoint
                 return Results.ValidationProblem(validationDtoResult.ToDictionary());
             }
 
-            var issues = await gitIssueService.GetAllIssuesForRepository(EHostingService.GitHub, cancellationToken);
-            return TypedResults.Ok(issues.MapToGitIssueDto());
+            // todo result pattern
+            var issues = await gitIssueService.GetAllIssuesForRepository((EHostingService)request.HostingService!, cancellationToken);
+            return TypedResults.Ok(issues.MapToGetAllIssuesResponse());
         })
         .WithName(Name)
-        .Produces<GitIssueDto[]>(StatusCodes.Status200OK)
+        .Produces<GetAllIssuesResponseDto>(StatusCodes.Status200OK)
         .Produces<ValidationProblemDetails>(StatusCodes.Status400BadRequest)
         .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
             

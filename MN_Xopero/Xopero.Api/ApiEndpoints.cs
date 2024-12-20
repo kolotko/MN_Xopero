@@ -8,9 +8,10 @@ public static class ApiEndpoints
     {
         private const string Base = $"{ApiBase}/GitIssues";
         
-        public const string GetAll = Base;
+        public const string GetAll = $"{Base}/{{hostingService}}";
         public const string Create = Base;
-        public const string Update = $"{Base}/{{id:guid}}";
-        public const string Close = $"{Base}/{{id:guid}}";
+        public const string Get = $"{Base}/{{hostingService}}/{{id:int}}";
+        public const string Update = $"{Base}/{{id:int}}";
+        public const string Close = $"{Base}/{{id:int}}";
     }
 }

@@ -26,6 +26,8 @@ public static class ApplicationServiceCollectionExtensions
     public static IServiceCollection AddApplicationValidators(this IServiceCollection services)
     {
         services.AddValidatorsFromAssemblyContaining<GetAllIssuesRequestValidator>();
+        services.AddValidatorsFromAssemblyContaining<CreateIssueRequestValidator>();
+        services.AddValidatorsFromAssemblyContaining<GetIssueRequestValidator>();
         return services;
     }
     
@@ -34,9 +36,12 @@ public static class ApplicationServiceCollectionExtensions
         services.AddProblemDetails(options =>
             options.CustomizeProblemDetails = (context) =>
             {
-                context.ProblemDetails.Status = 500;
-                context.ProblemDetails.Title = "Server Error"; //TODO: locale
-                context.ProblemDetails.Extensions = null;
+                if (context.ProblemDetails.Status != 400)
+                {
+                    context.ProblemDetails.Status = 500;
+                    context.ProblemDetails.Title = "Server Error"; //TODO: locale
+                    context.ProblemDetails.Extensions = null;
+                }
             }
         );
         return services;
@@ -53,7 +58,9 @@ public static class ApplicationServiceCollectionExtensions
     public static IServiceCollection AddHttpClientService(this IServiceCollection services)
     {
         // todo; dodać retry policy
-        services.AddHttpClient<IExternalGitHostingAdapter, GitHubAdapter>((serviceProvider, client) =>
+        // opisać dlaczego rejestrowanie na ten sam interfejs wielu instancji jest problematyczne i trzeba dodać name
+        // https://stackoverflow.com/questions/74005464/add-httpclients-with-same-interface-ended-up-having-the-same-base-url-asp-net-co
+        services.AddHttpClient<IExternalGitHostingAdapter, GitHubAdapter>($"{nameof(GitHubAdapter)}HttpClient", (serviceProvider, client) =>
         {
             var settings = serviceProvider.GetRequiredService<IOptions<GitHubSettings>>().Value;
             client.BaseAddress = new Uri(settings.Url!);
@@ -64,7 +71,7 @@ public static class ApplicationServiceCollectionExtensions
         .AddHttpMessageHandler<HttpLoggerHandler>();
         
         
-        services.AddHttpClient<IExternalGitHostingAdapter, BitbucketAdapter>((serviceProvider, client) =>
+        services.AddHttpClient<IExternalGitHostingAdapter, BitbucketAdapter>($"{nameof(BitbucketAdapter)}HttpClient", (serviceProvider, client) =>
         {
             var settings = serviceProvider.GetRequiredService<IOptions<BitbucketSettings>>().Value;
             client.BaseAddress = new Uri(settings.Url!);

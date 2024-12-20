@@ -4,6 +4,9 @@ namespace Xopero.Contracts.GitHosting.GitHub;
 
 public class GitHubIssueDto
 {
+    [JsonPropertyName("number")]
+    public int? Number { get; set; }
+    
     [JsonPropertyName("html_url")]
     public string? HtmlUrl { get; set; }
     

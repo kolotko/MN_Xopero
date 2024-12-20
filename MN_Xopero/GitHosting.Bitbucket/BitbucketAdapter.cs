@@ -9,4 +9,14 @@ public class BitbucketAdapter(HttpClient httpClient) : IExternalGitHostingAdapte
     {
         throw new NotImplementedException();
     }
+
+    public Task<GitIssue?> GetIssue(int id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<GitIssue?> CreateIssue(GitIssue gitIssue, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 }
