@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Xopero.Abstraction.Services;
 using Xopero.Contracts.Requests;
 using Xopero.Contracts.Responses;
@@ -17,21 +16,14 @@ public static class GetIssueEndpoint
         app.MapGet(ApiEndpoints.GitIssues.Get, async (
                 [AsParameters] GetIssueRequest request,
                 IGitIssueService gitIssueService,
-                IValidator<GetIssueRequest> getIssueRequestValidator,
                 CancellationToken cancellationToken) =>
             {
-                var validationDtoResult = await getIssueRequestValidator.ValidateAsync(request, cancellationToken);
-                if (!validationDtoResult.IsValid)
-                {
-                    return Results.ValidationProblem(validationDtoResult.ToDictionary());
-                }
-
                 var issue = await gitIssueService.GetIssueForRepository((EHostingService)request.HostingService!, request.Id!.Value, cancellationToken);
                 if (issue.IsSuccess)
                 {
                     return TypedResults.Ok(issue.Body!.MapToGetIssueResponse());
                 }
-                return TypedResults.Problem(issue.Message, statusCode: StatusCodes.Status400BadRequest);
+                return (IResult)TypedResults.Problem(issue.Message, statusCode: StatusCodes.Status400BadRequest);
             })
             .WithName(Name)
             .Produces<GetIssueResponseDto>(StatusCodes.Status200OK)

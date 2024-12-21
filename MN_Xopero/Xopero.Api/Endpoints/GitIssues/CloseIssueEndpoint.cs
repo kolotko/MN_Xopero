@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Xopero.Abstraction.Services;
 using Xopero.Contracts.Requests;
 using Xopero.Models.Enums;
@@ -15,21 +14,14 @@ public static class CloseIssueEndpoint
         app.MapDelete(ApiEndpoints.GitIssues.Close, async (
                 [AsParameters] CloseIssueRequest request,
                 IGitIssueService gitIssueService,
-                IValidator<CloseIssueRequest> closeIssueRequestValidator,
                 CancellationToken cancellationToken) =>
             {
-                var validationDtoResult = await closeIssueRequestValidator.ValidateAsync(request, cancellationToken);
-                if (!validationDtoResult.IsValid)
-                {
-                    return Results.ValidationProblem(validationDtoResult.ToDictionary());
-                }
-                
                 var result = await gitIssueService.CloseIssueForRepository((EHostingService)request.HostingService!, request.Id!.Value, cancellationToken);
                 if (result.IsSuccess)
                 {
                     return TypedResults.NoContent();
                 }
-                return TypedResults.Problem(result.Message, statusCode: StatusCodes.Status400BadRequest);
+                return (IResult)TypedResults.Problem(result.Message, statusCode: StatusCodes.Status400BadRequest);
             })
             .WithName(Name)
             .Produces(StatusCodes.Status204NoContent)

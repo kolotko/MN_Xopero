@@ -25,11 +25,8 @@ public static class ApplicationServiceCollectionExtensions
     
     public static IServiceCollection AddApplicationValidators(this IServiceCollection services)
     {
-        services.AddValidatorsFromAssemblyContaining<GetAllIssuesRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<CreateIssueRequestValidator>();
-        services.AddValidatorsFromAssemblyContaining<GetIssueRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<UpdateIssueRequestValidator>();
-        services.AddValidatorsFromAssemblyContaining<CloseIssueRequestValidator>();
         return services;
     }
     

@@ -15,7 +15,8 @@ public static class CreateIssueEndpoint
     public static IEndpointRouteBuilder MapCreateIssue(this IEndpointRouteBuilder app)
     {
         app.MapPost(ApiEndpoints.GitIssues.Create, async (
-                [AsParameters] CreateIssueRequest request, //TODO from body powinno być
+                [AsParameters] CreateIssueParametersRequest parameters,
+                [FromBody] CreateIssueRequest request,
                 IValidator<CreateIssueRequest> createIssueValidator,
                 IGitIssueService gitIssueService,
                 CancellationToken cancellationToken) =>
@@ -25,12 +26,12 @@ public static class CreateIssueEndpoint
                 {
                     return Results.ValidationProblem(validationDtoResult.ToDictionary());
                 }
-
+                
                 var model = request.MapToGitIssue();
-                var result = await gitIssueService.CreateIssueForRepository((EHostingService)request.HostingService!, model, cancellationToken);
+                var result = await gitIssueService.CreateIssueForRepository((EHostingService)parameters.HostingService!, model, cancellationToken);
                 if (result.IsSuccess)
                 {
-                    return TypedResults.CreatedAtRoute(result.Body!.MapToCreateIssueResponse(), GetIssueEndpoint.Name, new { hostingService = request.HostingService!, id = 1 } );
+                    return TypedResults.CreatedAtRoute(result.Body!.MapToCreateIssueResponse(), GetIssueEndpoint.Name, new { hostingService = parameters.HostingService!, id = 1 } );
                 }
                 return TypedResults.Problem(result.Message, statusCode: StatusCodes.Status400BadRequest);
             })

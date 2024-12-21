@@ -1,6 +1,117 @@
-@Xopero.Api_HostAddress = http://localhost:5172
+### Create Issue GitLab
+POST {{baseUrl}}/api/GitIssues/GitLab
+Content-Type: application/json
 
-GET {{Xopero.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+{
+  "title": "GitLab issue title",
+  "body": "GitLab issue body"
+}
 
-###
+> {%
+    client.assert(response.status === 201, "Something went wrong");
+    client.global.set("GitLabIssueId", response.body.id);
+%}
+
+### Create Issue GitHub
+POST {{baseUrl}}/api/GitIssues/GitHub
+Content-Type: application/json
+
+{
+  "title": "GitHub issue title",
+  "body": "GitHub issue body"
+}
+
+> {%
+    client.assert(response.status === 201, "Something went wrong");
+    client.global.set("GitHubIssueId", response.body.id);
+%}
+
+### Create Issue Body Validation Title
+POST {{baseUrl}}/api/GitIssues/GitLab
+Content-Type: application/json
+
+{
+  "title": "GitHub issue title"
+}
+
+### Create Issue Body Validation Body
+POST {{baseUrl}}/api/GitIssues/GitHub
+Content-Type: application/json
+
+{
+  "body": "GitHub issue body"
+}
+
+
+
+
+
+### GET GitLab
+GET {{baseUrl}}/api/GitIssues/GitLab/{{GitLabIssueId}}
+Content-Type: application/json
+
+### GET GitHub
+GET {{baseUrl}}/api/GitIssues/GitHub/{{GitHubIssueId}}
+Content-Type: application/json
+
+
+
+
+
+### Update GitLab
+PUT {{baseUrl}}/api/GitIssues/GitLab/{{GitLabIssueId}}
+Content-Type: application/json
+
+{
+  "title": "GitLab issue title after update",
+  "body": "GitLab issue body after update"
+}
+
+### Update GitHub
+PUT {{baseUrl}}/api/GitIssues/GitHub/{{GitHubIssueId}}
+Content-Type: application/json
+
+{
+  "title": "GitHub issue title after update",
+  "body": "GitHub issue body after update"
+}
+
+### Update GitLab Body Validation Title
+PUT {{baseUrl}}/api/GitIssues/GitLab/{{GitLabIssueId}}
+Content-Type: application/json
+
+{
+  "body": "GitLab issue body after update"
+}
+
+### Update GitLab Body Validation Body
+PUT {{baseUrl}}/api/GitIssues/GitLab/{{GitLabIssueId}}
+Content-Type: application/json
+
+{
+  "title": "GitHub issue title after update"
+}
+
+
+
+
+
+### Close issue GitLab
+DELETE {{baseUrl}}/api/GitIssues/GitLab/{{GitLabIssueId}}
+Content-Type: application/json
+
+### Close issueGitHub
+DELETE {{baseUrl}}/api/GitIssues/GitHub/{{GitHubIssueId}}
+Content-Type: application/json
+
+
+
+
+
+### GET all GitLab
+GET {{baseUrl}}/api/GitIssues/GitLab
+Content-Type: application/json
+
+### GET all GitHub
+GET {{baseUrl}}/api/GitIssues/GitHub
+Content-Type: application/json

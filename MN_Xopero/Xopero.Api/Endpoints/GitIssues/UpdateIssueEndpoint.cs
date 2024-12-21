@@ -15,7 +15,8 @@ public static class UpdateIssueEndpoint
     public static IEndpointRouteBuilder MapUpdateIssue(this IEndpointRouteBuilder app)
     {
         app.MapPut(ApiEndpoints.GitIssues.Update, async (
-                [AsParameters] UpdateIssueRequest request, //todo
+                [AsParameters] UpdateIssueParametersRequest parameters,
+                [FromBody] UpdateIssueRequest request,
                 IGitIssueService gitIssueService,
                 IValidator<UpdateIssueRequest> updateIssueRequestValidator,
                 CancellationToken cancellationToken) =>
@@ -26,8 +27,8 @@ public static class UpdateIssueEndpoint
                     return Results.ValidationProblem(validationDtoResult.ToDictionary());
                 }
                 
-                var model = request.MapToGitIssue();
-                var result = await gitIssueService.UpdateIssueForRepository((EHostingService)request.HostingService!, model, cancellationToken);
+                var model = request.MapToGitIssue(parameters.Id!.Value);
+                var result = await gitIssueService.UpdateIssueForRepository((EHostingService)parameters.HostingService!, model, cancellationToken);
                 if (result.IsSuccess)
                 {
                     return TypedResults.Ok(result.Body!.MapToUpdateIssueResponse());
