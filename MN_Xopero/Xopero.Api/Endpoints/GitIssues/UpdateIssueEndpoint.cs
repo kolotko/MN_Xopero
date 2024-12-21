@@ -15,7 +15,7 @@ public static class UpdateIssueEndpoint
     public static IEndpointRouteBuilder MapUpdateIssue(this IEndpointRouteBuilder app)
     {
         app.MapPut(ApiEndpoints.GitIssues.Update, async (
-                [AsParameters] UpdateIssueRequest request,
+                [AsParameters] UpdateIssueRequest request, //todo
                 IGitIssueService gitIssueService,
                 IValidator<UpdateIssueRequest> updateIssueRequestValidator,
                 CancellationToken cancellationToken) =>

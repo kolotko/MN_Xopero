@@ -26,10 +26,13 @@ public static class GetAllIssuesEndpoint
             {
                 return Results.ValidationProblem(validationDtoResult.ToDictionary());
             }
-
-            // todo result pattern
-            var issues = await gitIssueService.GetAllIssuesForRepository((EHostingService)request.HostingService!, cancellationToken);
-            return TypedResults.Ok(issues.MapToGetAllIssuesResponse());
+            
+            var result = await gitIssueService.GetAllIssuesForRepository((EHostingService)request.HostingService!, cancellationToken);
+            if (result.IsSuccess)
+            {
+                return TypedResults.Ok(result.Body!.MapToGetAllIssuesResponse());
+            }
+            return TypedResults.Problem(result.Message, statusCode: StatusCodes.Status400BadRequest);
         })
         .WithName(Name)
         .Produces<GetAllIssuesResponseDto>(StatusCodes.Status200OK)

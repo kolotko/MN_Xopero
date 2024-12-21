@@ -6,16 +6,11 @@ using Xopero.Models;
 
 namespace GitHosting.GitHub;
 
-public class GitHubAdapter: IExternalGitHostingAdapter
+public class GitHubAdapter(HttpClient httpClient) : IExternalGitHostingAdapter
 {
-    private readonly HttpClient _httpClient;
-    public GitHubAdapter(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
     public async Task<IEnumerable<GitIssue>?> GetAllIssues(CancellationToken cancellationToken)
     {
-        var response = await _httpClient.GetAsync("", cancellationToken);
+        var response = await httpClient.GetAsync("", cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -29,7 +24,7 @@ public class GitHubAdapter: IExternalGitHostingAdapter
 
     public async Task<GitIssue?> GetIssue(int id, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.GetAsync($"/repos/kolotko/MN_Xopero/issues/{id}", cancellationToken);
+        var response = await httpClient.GetAsync($"/repos/kolotko/MN_Xopero/issues/{id}", cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -42,7 +37,7 @@ public class GitHubAdapter: IExternalGitHostingAdapter
 
     public async Task<GitIssue?> CreateIssue(GitIssue gitIssue, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.PostAsJsonAsync("", gitIssue.MapToGitIssueDto(), cancellationToken);
+        var response = await httpClient.PostAsJsonAsync("", gitIssue.MapToGitHubIssueDto(), cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             return null;
@@ -54,7 +49,7 @@ public class GitHubAdapter: IExternalGitHostingAdapter
 
     public async Task<GitIssue?> UpdateIssue(GitIssue gitIssue, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.PatchAsJsonAsync($"/repos/kolotko/MN_Xopero/issues/{gitIssue.Number}", gitIssue.MapToGitIssueDto(), cancellationToken);
+        var response = await httpClient.PatchAsJsonAsync($"/repos/kolotko/MN_Xopero/issues/{gitIssue.Number}", gitIssue.MapToGitHubIssueDto(), cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             return null;
@@ -64,19 +59,13 @@ public class GitHubAdapter: IExternalGitHostingAdapter
         return issue?.MapToGitIssue();
     }
 
-    public async Task<GitIssue?> CloseIssue(int id, CancellationToken cancellationToken = default)
+    public async Task<bool> CloseIssue(int id, CancellationToken cancellationToken = default)
     {
         var closeDto = new GitHubCloseIssueDto()
         {
             State = "closed"
         };
-        var response = await _httpClient.PatchAsJsonAsync($"/repos/kolotko/MN_Xopero/issues/{id}", closeDto, cancellationToken);
-        if (!response.IsSuccessStatusCode)
-        {
-            return null;
-        }
-        
-        var issue =  await response.Content.ReadFromJsonAsync<GitHubIssueDto>(cancellationToken);
-        return issue?.MapToGitIssue();
+        var response = await httpClient.PatchAsJsonAsync($"/repos/kolotko/MN_Xopero/issues/{id}", closeDto, cancellationToken);
+        return response.IsSuccessStatusCode;
     }
 }

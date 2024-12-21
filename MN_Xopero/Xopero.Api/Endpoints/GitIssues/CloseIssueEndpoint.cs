@@ -27,12 +27,12 @@ public static class CloseIssueEndpoint
                 var result = await gitIssueService.CloseIssueForRepository((EHostingService)request.HostingService!, request.Id!.Value, cancellationToken);
                 if (result.IsSuccess)
                 {
-                    return TypedResults.Ok();
+                    return TypedResults.NoContent();
                 }
                 return TypedResults.Problem(result.Message, statusCode: StatusCodes.Status400BadRequest);
             })
             .WithName(Name)
-            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status204NoContent)
             .Produces<ValidationProblemDetails>(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
             

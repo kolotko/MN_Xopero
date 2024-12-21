@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using FluentValidation;
-using GitHosting.Bitbucket;
 using GitHosting.GitHub;
+using GitHosting.GitLab;
 using Microsoft.Extensions.Options;
 using Xopero.Abstraction.Factories;
 using Xopero.Abstraction.GitHosting;
@@ -19,7 +19,7 @@ public static class ApplicationServiceCollectionExtensions
     public static IServiceCollection AddApplicationConfiguration(this IServiceCollection services, ConfigurationManager configurationManager)
     {
         services.Configure<GitHubSettings>(configurationManager.GetSection(GitHubSettings.GitHubSectionName));
-        services.Configure<BitbucketSettings>(configurationManager.GetSection(BitbucketSettings.BitbucketSectionName));
+        services.Configure<GitLabSettings>(configurationManager.GetSection(GitLabSettings.GitLabSectionName));
         return services;
     }
     
@@ -73,11 +73,11 @@ public static class ApplicationServiceCollectionExtensions
         .AddHttpMessageHandler<HttpLoggerHandler>();
         
         
-        services.AddHttpClient<IExternalGitHostingAdapter, BitbucketAdapter>($"{nameof(BitbucketAdapter)}HttpClient", (serviceProvider, client) =>
+        services.AddHttpClient<IExternalGitHostingAdapter, GitLabAdapter>($"{nameof(GitLabAdapter)}HttpClient", (serviceProvider, client) =>
         {
-            var settings = serviceProvider.GetRequiredService<IOptions<BitbucketSettings>>().Value;
+            var settings = serviceProvider.GetRequiredService<IOptions<GitLabSettings>>().Value;
             client.BaseAddress = new Uri(settings.Url!);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", settings.Token);
+            client.DefaultRequestHeaders.Add("PRIVATE-TOKEN",settings.Token);
         });
         
         return services;

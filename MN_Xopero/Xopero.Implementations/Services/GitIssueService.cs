@@ -7,17 +7,25 @@ namespace Xopero.Implementations.Services;
 
 public class GitIssueService(IGitHostingServiceFactory gitHostingServiceFactory) : IGitIssueService
 {
-    public async Task<IEnumerable<GitIssue>> GetAllIssuesForRepository(EHostingService hostingService, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<GitIssue>>> GetAllIssuesForRepository(EHostingService hostingService, CancellationToken cancellationToken = default)
     {
         var externalGitHosting = gitHostingServiceFactory.GetExternalGitHostingAdapter(hostingService);
         var allIssues = await externalGitHosting.GetAllIssues(cancellationToken);
-
-        if (allIssues is not null)
-        {
-            return allIssues;
-        }
         
-        return [];
+        if (allIssues is null)
+        {
+            return new Result<IEnumerable<GitIssue>>()
+            {
+                IsSuccess = false,
+                Message = "Can't get issues." //TODO location
+            };
+        }
+
+        return new Result<IEnumerable<GitIssue>>()
+        {
+            IsSuccess = true,
+            Body = allIssues!
+        };
     }
 
     public async Task<Result<GitIssue>> GetIssueForRepository(EHostingService hostingService, int id, CancellationToken cancellationToken = default)
@@ -81,23 +89,14 @@ public class GitIssueService(IGitHostingServiceFactory gitHostingServiceFactory)
         };
     }
 
-    public async Task<Result<GitIssue>> CloseIssueForRepository(EHostingService hostingService, int id, CancellationToken cancellationToken = default)
+    public async Task<Result> CloseIssueForRepository(EHostingService hostingService, int id, CancellationToken cancellationToken = default)
     {
         var externalGitHosting = gitHostingServiceFactory.GetExternalGitHostingAdapter(hostingService);
-        var issue = await externalGitHosting.CloseIssue(id, cancellationToken);
-        if (issue is null)
+        var success = await externalGitHosting.CloseIssue(id, cancellationToken);
+        return new Result()
         {
-            return new Result<GitIssue>()
-            {
-                IsSuccess = false,
-                Message = "Can't close issue." //TODO location
-            };
-        }
-
-        return new Result<GitIssue>()
-        {
-            IsSuccess = true,
-            Body = issue!
+            IsSuccess = success,
+            Message = "Can't close issue." //TODO location
         };
     }
 }

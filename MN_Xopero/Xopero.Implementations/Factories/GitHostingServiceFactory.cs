@@ -1,5 +1,5 @@
-using GitHosting.Bitbucket;
 using GitHosting.GitHub;
+using GitHosting.GitLab;
 using Xopero.Abstraction.Factories;
 using Xopero.Abstraction.GitHosting;
 using Xopero.Models.Enums;
@@ -14,10 +14,10 @@ public class GitHostingServiceFactory(IEnumerable<IExternalGitHostingAdapter> ex
         {
             case EHostingService.GitHub:
                 return externalGitHostingAdapters.First(x => x is GitHubAdapter);
-            case EHostingService.Bitbucket:
-                return externalGitHostingAdapters.First(x => x is BitbucketAdapter);
+            case EHostingService.GitLab:
+                return externalGitHostingAdapters.First(x => x is GitLabAdapter);
         }
 
-        throw new NotImplementedException("Unknown Hosting Service");
+        throw new NotImplementedException("Unknown Hosting Service"); //todo
     }
 }
