@@ -38,7 +38,7 @@ public static class ApplicationServiceCollectionExtensions
                 if (context.ProblemDetails.Status != 400)
                 {
                     context.ProblemDetails.Status = 500;
-                    context.ProblemDetails.Title = "Server Error"; //TODO: locale
+                    context.ProblemDetails.Title = "Server Error";
                     context.ProblemDetails.Extensions = null;
                 }
             }
@@ -56,9 +56,6 @@ public static class ApplicationServiceCollectionExtensions
     
     public static IServiceCollection AddHttpClientService(this IServiceCollection services)
     {
-        // todo; dodać retry policy
-        // opisać dlaczego rejestrowanie na ten sam interfejs wielu instancji jest problematyczne i trzeba dodać name
-        // https://stackoverflow.com/questions/74005464/add-httpclients-with-same-interface-ended-up-having-the-same-base-url-asp-net-co
         services.AddHttpClient<IExternalGitHostingAdapter, GitHubAdapter>($"{nameof(GitHubAdapter)}HttpClient", (serviceProvider, client) =>
         {
             var settings = serviceProvider.GetRequiredService<IOptions<GitHubSettings>>().Value;
@@ -67,7 +64,8 @@ public static class ApplicationServiceCollectionExtensions
             client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("product", settings.UserAgentName)); // bez tego 403 
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(settings.Accept!));
         }).SetHandlerLifetime(TimeSpan.FromSeconds(5))
-        .AddHttpMessageHandler<HttpLoggerHandler>();
+        .AddHttpMessageHandler<HttpLoggerHandler>()
+        .AddStandardResilienceHandler();
         
         
         services.AddHttpClient<IExternalGitHostingAdapter, GitLabAdapter>($"{nameof(GitLabAdapter)}HttpClient", (serviceProvider, client) =>
@@ -75,7 +73,9 @@ public static class ApplicationServiceCollectionExtensions
             var settings = serviceProvider.GetRequiredService<IOptions<GitLabSettings>>().Value;
             client.BaseAddress = new Uri(settings.Url!);
             client.DefaultRequestHeaders.Add("PRIVATE-TOKEN",settings.Token);
-        });
+        }).SetHandlerLifetime(TimeSpan.FromSeconds(5))
+        .AddHttpMessageHandler<HttpLoggerHandler>()
+        .AddStandardResilienceHandler();
         
         return services;
     }

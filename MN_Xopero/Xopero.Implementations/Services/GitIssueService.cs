@@ -17,7 +17,7 @@ public class GitIssueService(IGitHostingServiceFactory gitHostingServiceFactory)
             return new Result<IEnumerable<GitIssue>>()
             {
                 IsSuccess = false,
-                Message = "Can't get issues." //TODO location
+                Message = "Can't get issues."
             };
         }
 
@@ -37,7 +37,7 @@ public class GitIssueService(IGitHostingServiceFactory gitHostingServiceFactory)
             return new Result<GitIssue>()
             {
                 IsSuccess = false,
-                Message = "Can't find issue." //TODO location
+                Message = "Can't find issue."
             };
         }
 
@@ -57,7 +57,7 @@ public class GitIssueService(IGitHostingServiceFactory gitHostingServiceFactory)
             return new Result<GitIssue>()
             {
                 IsSuccess = false,
-                Message = "Can't create issue." //TODO location
+                Message = "Can't create issue."
             };
         }
 
@@ -78,7 +78,7 @@ public class GitIssueService(IGitHostingServiceFactory gitHostingServiceFactory)
             return new Result<GitIssue>()
             {
                 IsSuccess = false,
-                Message = "Can't update issue." //TODO location
+                Message = "Can't update issue."
             };
         }
 
@@ -96,7 +96,7 @@ public class GitIssueService(IGitHostingServiceFactory gitHostingServiceFactory)
         return new Result()
         {
             IsSuccess = success,
-            Message = "Can't close issue." //TODO location
+            Message = "Can't close issue."
         };
     }
 }

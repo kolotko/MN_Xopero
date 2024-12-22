@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Repositories\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\GitHosting.GitHub\GitHosting.GitHub.csproj" />
       <ProjectReference Include="..\GitHosting.GitLab\GitHosting.GitLab.csproj" />
       <ProjectReference Include="..\Xopero.Abstraction\Xopero.Abstraction.csproj" />

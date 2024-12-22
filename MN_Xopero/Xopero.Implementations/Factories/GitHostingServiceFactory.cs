@@ -18,6 +18,6 @@ public class GitHostingServiceFactory(IEnumerable<IExternalGitHostingAdapter> ex
                 return externalGitHostingAdapters.First(x => x is GitLabAdapter);
         }
 
-        throw new NotImplementedException("Unknown Hosting Service"); //todo
+        throw new NotImplementedException("Unknown Hosting Service");
     }
 }

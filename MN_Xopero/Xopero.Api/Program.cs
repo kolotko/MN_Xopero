@@ -8,7 +8,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-
+builder.Services.AddHttpLogging(logging => { });
 
 builder.Services.AddApplicationConfiguration(builder.Configuration);
 builder.Services.AddApplicationValidators();
@@ -28,6 +28,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseHttpLogging();
 
 // Add Endpoints
 app.MapApiEndpoints();

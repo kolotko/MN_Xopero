@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Repositories\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Xopero.Contracts\Xopero.Contracts.csproj" />
       <ProjectReference Include="..\Xopero.Models\Xopero.Models.csproj" />
     </ItemGroup>
